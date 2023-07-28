@@ -12,41 +12,38 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.FormattedMessage;
 import org.apache.logging.log4j.message.Message;
 
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import tterrag.core.TTCore;
 import tterrag.core.common.config.ConfigHandler;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
-public class TextureErrorRemover extends Logger
-{
+public class TextureErrorRemover extends Logger {
+
     private static TextureErrorRemover INSTANCE;
     private int removed = 0;
 
-    private TextureErrorRemover(Logger other)
-    {
+    private TextureErrorRemover(Logger other) {
         super(other.getContext(), other.getName(), other.getMessageFactory());
     }
 
     @Override
-    public void log(Marker marker, String fqcn, Level level, Message data, Throwable t)
-    {
-        if (ConfigHandler.textureErrorRemover != 0)
-        {
-            if (t instanceof FileNotFoundException)
-            {
-                if (ConfigHandler.textureErrorRemover == 1)
-                {
+    public void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
+        if (ConfigHandler.textureErrorRemover != 0) {
+            if (t instanceof FileNotFoundException) {
+                if (ConfigHandler.textureErrorRemover == 1) {
                     super.log(marker, fqcn, level, data, null);
                 }
                 removed++;
-            }
-            else
-            {
+            } else {
                 super.log(marker, fqcn, level, data, t);
             }
-            if (data.getFormat().startsWith("Created:"))
-            {
-                TTCore.logger.info(ConfigHandler.textureErrorRemover == 1 ? new FormattedMessage("Removed %d missing texture stacktraces. Tada!",
-                        removed) : new FormattedMessage("There were %d missing texture errors here. They're gone now.", removed));
+            if (data.getFormat()
+                .startsWith("Created:")) {
+                TTCore.logger.info(
+                    ConfigHandler.textureErrorRemover == 1
+                        ? new FormattedMessage("Removed %d missing texture stacktraces. Tada!", removed)
+                        : new FormattedMessage(
+                            "There were %d missing texture errors here. They're gone now.",
+                            removed));
                 removed = 0;
             }
             return;
@@ -54,11 +51,9 @@ public class TextureErrorRemover extends Logger
         super.log(marker, fqcn, level, data, t);
     }
 
-    public static void beginIntercepting()
-    {
+    public static void beginIntercepting() {
         TTCore.logger.info("Attempting to initialize texture error message interceptor.");
-        try
-        {
+        try {
             Field f = ReflectionHelper.findField(TextureMap.class, "logger", "field_147635_d", "d");
             Field modifiersField = Field.class.getDeclaredField("modifiers");
             modifiersField.setAccessible(true);
@@ -66,9 +61,7 @@ public class TextureErrorRemover extends Logger
             f.setAccessible(true);
             INSTANCE = new TextureErrorRemover((Logger) f.get(null));
             f.set(null, INSTANCE);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             TTCore.logger.error("Failed to initialize texture error interceptor!", e);
         }
     }

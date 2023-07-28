@@ -2,7 +2,6 @@ package tterrag.core.common.util;
 
 import java.util.Random;
 
-import lombok.experimental.UtilityClass;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.init.Items;
@@ -13,25 +12,24 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
+import lombok.experimental.UtilityClass;
+
 @UtilityClass
-public class TTEntityUtils
-{
+public class TTEntityUtils {
+
     private static final Random rand = new Random();
 
-    public void setEntityVelocity(Entity entity, double velX, double velY, double velZ)
-    {
+    public void setEntityVelocity(Entity entity, double velX, double velY, double velZ) {
         entity.motionX = velX;
         entity.motionY = velY;
         entity.motionZ = velZ;
     }
 
-    public EntityFireworkRocket getRandomFirework(World world)
-    {
+    public EntityFireworkRocket getRandomFirework(World world) {
         return getRandomFirework(world, new BlockCoord(0, 0, 0));
     }
 
-    public EntityFireworkRocket getRandomFirework(World world, BlockCoord pos)
-    {
+    public EntityFireworkRocket getRandomFirework(World world, BlockCoord pos) {
         ItemStack firework = new ItemStack(Items.fireworks);
         firework.stackTagCompound = new NBTTagCompound();
         NBTTagCompound expl = new NBTTagCompound();
@@ -39,8 +37,7 @@ public class TTEntityUtils
         expl.setBoolean("Trail", true);
 
         int[] colors = new int[rand.nextInt(8) + 1];
-        for (int i = 0; i < colors.length; i++)
-        {
+        for (int i = 0; i < colors.length; i++) {
             colors[i] = ItemDye.field_150922_c[rand.nextInt(16)];
         }
         expl.setIntArray("Colors", colors);
@@ -60,29 +57,25 @@ public class TTEntityUtils
         return e;
     }
 
-    public void spawnFirework(BlockCoord block, int dimID)
-    {
+    public void spawnFirework(BlockCoord block, int dimID) {
         spawnFirework(block, dimID, 0);
     }
 
-    public void spawnFirework(BlockCoord block, int dimID, int range)
-    {
+    public void spawnFirework(BlockCoord block, int dimID, int range) {
         World world = DimensionManager.getWorld(dimID);
 
         BlockCoord pos = new BlockCoord(0, 0, 0);
         pos.setPosition(block.x, block.y, block.z);
 
         // don't bother if there's no randomness at all
-        if (range > 0)
-        {
+        if (range > 0) {
             pos.setPosition(moveRandomly(block.x, range), block.y, moveRandomly(block.z, range));
 
             int tries = -1;
-            while (!world.isAirBlock(pos.x, pos.y, pos.z) && !world.getBlock(pos.x, pos.y, pos.z).isReplaceable(world, pos.x, pos.y, pos.z))
-            {
+            while (!world.isAirBlock(pos.x, pos.y, pos.z) && !world.getBlock(pos.x, pos.y, pos.z)
+                .isReplaceable(world, pos.x, pos.y, pos.z)) {
                 tries++;
-                if (tries > 100)
-                {
+                if (tries > 100) {
                     return;
                 }
             }
@@ -91,8 +84,7 @@ public class TTEntityUtils
         world.spawnEntityInWorld(getRandomFirework(world, pos));
     }
 
-    private double moveRandomly(double base, double range)
-    {
+    private double moveRandomly(double base, double range) {
         return base + 0.5 + rand.nextDouble() * range - (range / 2);
     }
 }

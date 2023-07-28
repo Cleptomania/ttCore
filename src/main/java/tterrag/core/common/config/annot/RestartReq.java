@@ -9,14 +9,15 @@ import java.lang.annotation.Target;
 import tterrag.core.common.config.AbstractConfigHandler.RestartReqs;
 
 /**
- * Represents the restart requirements of a config value. Use this if your config will have no effect if changed while the game is running. Has no
+ * Represents the restart requirements of a config value. Use this if your config will have no effect if changed while
+ * the game is running. Has no
  * effect is this field is not also annotated with {@link Config}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @Documented
-public @interface RestartReq
-{
+public @interface RestartReq {
+
     /**
      * What requirements this config has for restarting the game.
      * 

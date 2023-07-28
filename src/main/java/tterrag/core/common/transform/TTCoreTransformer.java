@@ -1,10 +1,11 @@
 package tterrag.core.common.transform;
 
+import static org.objectweb.asm.Opcodes.*;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 import org.objectweb.asm.ClassReader;
@@ -18,33 +19,27 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import tterrag.core.TTCore;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
-
-import static org.objectweb.asm.Opcodes.*;
+import lombok.AllArgsConstructor;
+import tterrag.core.TTCore;
 
 @MCVersion(value = "1.7.10")
-public class TTCoreTransformer implements IClassTransformer
-{
+public class TTCoreTransformer implements IClassTransformer {
+
     @AllArgsConstructor
-    protected static class ObfSafeName
-    {
+    protected static class ObfSafeName {
+
         private String deobf, srg;
 
-        public String getName()
-        {
+        public String getName() {
             return TTCorePlugin.runtimeDeobfEnabled ? srg : deobf;
         }
 
         @Override
-        public boolean equals(Object obj)
-        {
-            if (obj instanceof String)
-            {
+        public boolean equals(Object obj) {
+            if (obj instanceof String) {
                 return obj.equals(deobf) || obj.equals(srg);
-            }
-            else if (obj instanceof ObfSafeName)
-            {
+            } else if (obj instanceof ObfSafeName) {
                 return ((ObfSafeName) obj).deobf.equals(deobf) && ((ObfSafeName) obj).srg.equals(srg);
             }
             return false;
@@ -53,8 +48,8 @@ public class TTCoreTransformer implements IClassTransformer
         // no hashcode because I'm naughty
     }
 
-    protected static abstract class Transform
-    {
+    protected static abstract class Transform {
+
         abstract void transform(Iterator<MethodNode> methods);
     }
 
@@ -66,12 +61,16 @@ public class TTCoreTransformer implements IClassTransformer
     private static final ObfSafeName anvilContainerMethod = new ObfSafeName("updateRepairOutput", "func_82848_d");
 
     private static final String anvilGuiClass = "net.minecraft.client.gui.GuiRepair";
-    private static final ObfSafeName anvilGuiMethod = new ObfSafeName("drawGuiContainerForegroundLayer", "func_146979_b");
+    private static final ObfSafeName anvilGuiMethod = new ObfSafeName(
+        "drawGuiContainerForegroundLayer",
+        "func_146979_b");
 
     private static final String enchantHelperClass = "net.minecraft.enchantment.EnchantmentHelper";
     private static final String enchantHelperMethodSig = "(Lnet/minecraft/item/ItemStack;I)I";
     private static final ObfSafeName buildEnchantListMethod = new ObfSafeName("buildEnchantmentList", "func_77513_b");
-    private static final ObfSafeName calcEnchantabilityMethod = new ObfSafeName("calcItemStackEnchantability", "func_77514_a");
+    private static final ObfSafeName calcEnchantabilityMethod = new ObfSafeName(
+        "calcItemStackEnchantability",
+        "func_77514_a");
 
     private static final String itemStackClass = "net.minecraft.item.ItemStack";
     private static final ObfSafeName itemStackMethod = new ObfSafeName("getRarity", "func_77953_t");
@@ -86,27 +85,27 @@ public class TTCoreTransformer implements IClassTransformer
     private static final String containerFurnaceMethodSig = "(Lnet/minecraft/inventory/ContainerFurnace;Lnet/minecraft/entity/player/EntityPlayer;I)Lnet/minecraft/item/ItemStack;";
 
     @Override
-    public byte[] transform(String name, String transformedName, byte[] basicClass)
-    {
+    public byte[] transform(String name, String transformedName, byte[] basicClass) {
         // Void fog removal
-        if (transformedName.equals(worldTypeClass))
-        {
-            basicClass = transform(basicClass, worldTypeClass, voidFogMethod, new Transform()
-            {
+        if (transformedName.equals(worldTypeClass)) {
+            basicClass = transform(basicClass, worldTypeClass, voidFogMethod, new Transform() {
+
                 @Override
-                void transform(Iterator<MethodNode> methods)
-                {
-                    while (methods.hasNext())
-                    {
+                void transform(Iterator<MethodNode> methods) {
+                    while (methods.hasNext()) {
                         MethodNode m = methods.next();
-                        if (voidFogMethod.equals(m.name))
-                        {
+                        if (voidFogMethod.equals(m.name)) {
                             m.instructions.clear();
 
                             m.instructions.add(new VarInsnNode(ALOAD, 0));
                             m.instructions.add(new VarInsnNode(ILOAD, 1));
-                            m.instructions.add(new MethodInsnNode(INVOKESTATIC, "tterrag/core/common/transform/TTCoreMethods", "hasVoidParticles",
-                                    voidFogMethodSig, false));
+                            m.instructions.add(
+                                new MethodInsnNode(
+                                    INVOKESTATIC,
+                                    "tterrag/core/common/transform/TTCoreMethods",
+                                    "hasVoidParticles",
+                                    voidFogMethodSig,
+                                    false));
                             m.instructions.add(new InsnNode(IRETURN));
 
                             break;
@@ -116,27 +115,27 @@ public class TTCoreTransformer implements IClassTransformer
             });
         }
         // Anvil max level
-        else if (transformedName.equals(anvilContainerClass) || transformedName.equals(anvilGuiClass))
-        {
-            basicClass = transform(basicClass, anvilContainerClass, anvilContainerMethod, new Transform()
-            {
+        else if (transformedName.equals(anvilContainerClass) || transformedName.equals(anvilGuiClass)) {
+            basicClass = transform(basicClass, anvilContainerClass, anvilContainerMethod, new Transform() {
+
                 @Override
-                void transform(Iterator<MethodNode> methods)
-                {
-                    while (methods.hasNext())
-                    {
+                void transform(Iterator<MethodNode> methods) {
+                    while (methods.hasNext()) {
                         MethodNode m = methods.next();
-                        if (anvilContainerMethod.equals(m.name) || anvilGuiMethod.equals(m.name))
-                        {
-                            for (int i = 0; i < m.instructions.size(); i++)
-                            {
+                        if (anvilContainerMethod.equals(m.name) || anvilGuiMethod.equals(m.name)) {
+                            for (int i = 0; i < m.instructions.size(); i++) {
                                 AbstractInsnNode next = m.instructions.get(i);
 
                                 next = m.instructions.get(i);
-                                if (next instanceof IntInsnNode && ((IntInsnNode) next).operand == 40)
-                                {
-                                    m.instructions.set(next, new MethodInsnNode(INVOKESTATIC, "tterrag/core/common/transform/TTCoreMethods",
-                                            "getMaxAnvilCost", "()I", false));
+                                if (next instanceof IntInsnNode && ((IntInsnNode) next).operand == 40) {
+                                    m.instructions.set(
+                                        next,
+                                        new MethodInsnNode(
+                                            INVOKESTATIC,
+                                            "tterrag/core/common/transform/TTCoreMethods",
+                                            "getMaxAnvilCost",
+                                            "()I",
+                                            false));
                                 }
                             }
                         }
@@ -145,35 +144,34 @@ public class TTCoreTransformer implements IClassTransformer
             });
         }
         // Item Enchantability Event
-        else if (transformedName.equals(enchantHelperClass))
-        {
+        else if (transformedName.equals(enchantHelperClass)) {
             final Map<String, int[]> data = new HashMap<String, int[]>();
             data.put(buildEnchantListMethod.getName(), new int[] { 1, 4 });
             data.put(calcEnchantabilityMethod.getName(), new int[] { 3, 5 });
-            Transform transformer = new Transform()
-            {
+            Transform transformer = new Transform() {
+
                 @Override
-                void transform(Iterator<MethodNode> methods)
-                {
-                    while (methods.hasNext())
-                    {
+                void transform(Iterator<MethodNode> methods) {
+                    while (methods.hasNext()) {
                         MethodNode m = methods.next();
-                        if (data.keySet().contains(m.name))
-                        {
+                        if (data.keySet()
+                            .contains(m.name)) {
                             int[] indeces = data.get(m.name);
-                            for (int i = 0; i < m.instructions.size(); i++)
-                            {
+                            for (int i = 0; i < m.instructions.size(); i++) {
                                 AbstractInsnNode next = m.instructions.get(i);
-                                if (next instanceof VarInsnNode)
-                                {
+                                if (next instanceof VarInsnNode) {
                                     VarInsnNode varNode = (VarInsnNode) next;
-                                    if (varNode.getOpcode() == ISTORE && varNode.var == indeces[1])
-                                    {
+                                    if (varNode.getOpcode() == ISTORE && varNode.var == indeces[1]) {
                                         InsnList toAdd = new InsnList();
                                         toAdd.add(new VarInsnNode(ALOAD, indeces[0]));
                                         toAdd.add(new VarInsnNode(ILOAD, indeces[1]));
-                                        toAdd.add(new MethodInsnNode(INVOKESTATIC, "tterrag/core/common/transform/TTCoreMethods",
-                                                "getItemEnchantability", enchantHelperMethodSig, false));
+                                        toAdd.add(
+                                            new MethodInsnNode(
+                                                INVOKESTATIC,
+                                                "tterrag/core/common/transform/TTCoreMethods",
+                                                "getItemEnchantability",
+                                                enchantHelperMethodSig,
+                                                false));
                                         toAdd.add(new VarInsnNode(ISTORE, indeces[1]));
                                         m.instructions.insert(next, toAdd);
                                         break;
@@ -190,23 +188,24 @@ public class TTCoreTransformer implements IClassTransformer
             basicClass = transform(basicClass, enchantHelperClass, buildEnchantListMethod, transformer);
         }
         // ItemRarity Event
-        else if (transformedName.equals(itemStackClass))
-        {
-            basicClass = transform(basicClass, itemStackClass, itemStackMethod, new Transform()
-            {
+        else if (transformedName.equals(itemStackClass)) {
+            basicClass = transform(basicClass, itemStackClass, itemStackMethod, new Transform() {
+
                 @Override
-                void transform(Iterator<MethodNode> methods)
-                {
-                    while (methods.hasNext())
-                    {
+                void transform(Iterator<MethodNode> methods) {
+                    while (methods.hasNext()) {
                         MethodNode m = methods.next();
-                        if (itemStackMethod.equals(m.name))
-                        {
+                        if (itemStackMethod.equals(m.name)) {
                             m.instructions.clear();
 
                             m.instructions.add(new VarInsnNode(ALOAD, 0));
-                            m.instructions.add(new MethodInsnNode(INVOKESTATIC, "tterrag/core/common/transform/TTCoreMethods", "getItemRarity",
-                                    itemStackMethodSig, false));
+                            m.instructions.add(
+                                new MethodInsnNode(
+                                    INVOKESTATIC,
+                                    "tterrag/core/common/transform/TTCoreMethods",
+                                    "getItemRarity",
+                                    itemStackMethodSig,
+                                    false));
                             m.instructions.add(new InsnNode(ARETURN));
 
                             break;
@@ -216,27 +215,26 @@ public class TTCoreTransformer implements IClassTransformer
             });
         }
         // ArrowUpdate Event
-        else if (transformedName.equals(entityArrowClass))
-        {
-            basicClass = transform(basicClass, entityArrowClass, entityArrowMethod, new Transform()
-            {
+        else if (transformedName.equals(entityArrowClass)) {
+            basicClass = transform(basicClass, entityArrowClass, entityArrowMethod, new Transform() {
+
                 @Override
-                void transform(Iterator<MethodNode> methods)
-                {
-                    while (methods.hasNext())
-                    {
+                void transform(Iterator<MethodNode> methods) {
+                    while (methods.hasNext()) {
                         MethodNode m = methods.next();
-                        if (entityArrowMethod.equals(m.name))
-                        {
-                            for (int i = 0; i < m.instructions.size(); i++)
-                            {
+                        if (entityArrowMethod.equals(m.name)) {
+                            for (int i = 0; i < m.instructions.size(); i++) {
                                 AbstractInsnNode next = m.instructions.get(i);
-                                if (next instanceof MethodInsnNode)
-                                {
+                                if (next instanceof MethodInsnNode) {
                                     InsnList toAdd = new InsnList();
                                     toAdd.add(new VarInsnNode(ALOAD, 0));
-                                    toAdd.add(new MethodInsnNode(INVOKESTATIC, "tterrag/core/common/transform/TTCoreMethods", "onArrowUpdate",
-                                            entityArrowMethodSig, false));
+                                    toAdd.add(
+                                        new MethodInsnNode(
+                                            INVOKESTATIC,
+                                            "tterrag/core/common/transform/TTCoreMethods",
+                                            "onArrowUpdate",
+                                            entityArrowMethodSig,
+                                            false));
                                     m.instructions.insert(next, toAdd);
                                     break;
                                 }
@@ -248,25 +246,26 @@ public class TTCoreTransformer implements IClassTransformer
             });
         }
         // Furnace Shift Click Fix
-        else if (transformedName.equals(containerFurnaceClass))
-        {
-            basicClass = transform(basicClass, containerFurnaceClass, containerFurnaceMethod, new Transform()
-            {
+        else if (transformedName.equals(containerFurnaceClass)) {
+            basicClass = transform(basicClass, containerFurnaceClass, containerFurnaceMethod, new Transform() {
+
                 @Override
-                void transform(Iterator<MethodNode> methods)
-                {
-                    while (methods.hasNext())
-                    {
+                void transform(Iterator<MethodNode> methods) {
+                    while (methods.hasNext()) {
                         MethodNode m = methods.next();
-                        if (containerFurnaceMethod.equals(m.name))
-                        {
+                        if (containerFurnaceMethod.equals(m.name)) {
                             m.instructions.clear();
 
                             m.instructions.add(new VarInsnNode(ALOAD, 0));
                             m.instructions.add(new VarInsnNode(ALOAD, 1));
                             m.instructions.add(new VarInsnNode(ILOAD, 2));
-                            m.instructions.add(new MethodInsnNode(INVOKESTATIC, "tterrag/core/common/transform/TTCoreMethods", "transferStackInSlot",
-                                    containerFurnaceMethodSig, false));
+                            m.instructions.add(
+                                new MethodInsnNode(
+                                    INVOKESTATIC,
+                                    "tterrag/core/common/transform/TTCoreMethods",
+                                    "transferStackInSlot",
+                                    containerFurnaceMethodSig,
+                                    false));
                             m.instructions.add(new InsnNode(ARETURN));
 
                             break;
@@ -279,8 +278,8 @@ public class TTCoreTransformer implements IClassTransformer
         return basicClass;
     }
 
-    protected final byte[] transform(byte[] classBytes, String className, ObfSafeName methodName, Transform transformer)
-    {
+    protected final byte[] transform(byte[] classBytes, String className, ObfSafeName methodName,
+        Transform transformer) {
         TTCore.logger.info("Transforming Class [" + className + "], Method [" + methodName.getName() + "]");
 
         ClassNode classNode = new ClassNode();

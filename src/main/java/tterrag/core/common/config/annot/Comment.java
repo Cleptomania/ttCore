@@ -12,8 +12,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @Documented
-public @interface Comment
-{
+public @interface Comment {
+
     /**
      * The comment for the config option. Multiple strings will be split into lines.
      */

@@ -2,15 +2,14 @@ package tterrag.core.common.util.blockiterators;
 
 import tterrag.core.common.util.BlockCoord;
 
-public class CubicBlockIterator extends AbstractBlockIterator
-{
+public class CubicBlockIterator extends AbstractBlockIterator {
+
     protected int radius;
     protected int minX, minY, minZ;
     protected int curX, curY, curZ;
     protected int maxX, maxY, maxZ;
 
-    public CubicBlockIterator(BlockCoord base, int radius)
-    {
+    public CubicBlockIterator(BlockCoord base, int radius) {
         super(base);
         this.radius = radius;
 
@@ -24,8 +23,7 @@ public class CubicBlockIterator extends AbstractBlockIterator
     }
 
     @Override
-    public BlockCoord next()
-    {
+    public BlockCoord next() {
         BlockCoord ret = new BlockCoord(curX, curY, curZ);
         curX = curX == maxX ? minX : curX + 1;
         curY = curX == minX ? curY == maxY ? minY : curY + 1 : curY;
@@ -34,8 +32,7 @@ public class CubicBlockIterator extends AbstractBlockIterator
     }
 
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         return curZ <= maxZ;
     }
 }

@@ -6,16 +6,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.FileResourcePack;
 import net.minecraft.client.resources.IResourcePack;
 
 import org.apache.commons.io.FileUtils;
 
-import tterrag.core.TTCore;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import lombok.AllArgsConstructor;
+import tterrag.core.TTCore;
 
 /**
  * A class that can be used to inject resources from files/folders outside your
@@ -33,11 +33,11 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
  * <p>
  * Also, {@link #setHasPackPng(Class)} allows your resource pack to have a logo.
  */
-public class ResourcePackAssembler
-{
+public class ResourcePackAssembler {
+
     @AllArgsConstructor
-    private class CustomFile
-    {
+    private class CustomFile {
+
         private String ext;
         private File file;
     }
@@ -60,18 +60,17 @@ public class ResourcePackAssembler
 
     /**
      * @param directory
-     *            The directory to assemble the resource pack in. The name of
-     *            the zip created will be the same as this folder, and it will
-     *            be created on the same level as the folder. This folder will
-     *            be <strong>WIPED</strong> on every call of {@link #assemble()}
-     *            .
+     *                  The directory to assemble the resource pack in. The name of
+     *                  the zip created will be the same as this folder, and it will
+     *                  be created on the same level as the folder. This folder will
+     *                  be <strong>WIPED</strong> on every call of {@link #assemble()}
+     *                  .
      * @param packName
-     *            The name of the resource pack.
+     *                  The name of the resource pack.
      * @param modid
-     *            Your mod's mod ID.
+     *                  Your mod's mod ID.
      */
-    public ResourcePackAssembler(File directory, String packName, String modid)
-    {
+    public ResourcePackAssembler(File directory, String packName, String modid) {
         this.dir = directory;
         this.zip = new File(dir.getAbsolutePath() + ".zip");
         this.name = packName;
@@ -86,11 +85,10 @@ public class ResourcePackAssembler
      * assets/[modid]/pack.png.
      * 
      * @param jarClass
-     *            A class in your jar file.
+     *                 A class in your jar file.
      * @return The {@link ResourcePackAssembler} instance.
      */
-    public ResourcePackAssembler setHasPackPng(Class<?> jarClass)
-    {
+    public ResourcePackAssembler setHasPackPng(Class<?> jarClass) {
         this.jarClass = jarClass;
         hasPackPng = true;
         return this;
@@ -101,10 +99,9 @@ public class ResourcePackAssembler
      * item texture folders.
      * 
      * @param icon
-     *            The icon file.
+     *             The icon file.
      */
-    public void addIcon(File icon)
-    {
+    public void addIcon(File icon) {
         icons.add(icon);
     }
 
@@ -112,10 +109,9 @@ public class ResourcePackAssembler
      * Adds a language file. This file will be inserted into the lang dir only.
      * 
      * @param lang
-     *            A language file (e.g. en_US.lang)
+     *             A language file (e.g. en_US.lang)
      */
-    public void addLang(File lang)
-    {
+    public void addLang(File lang) {
         langs.add(lang);
     }
 
@@ -124,12 +120,11 @@ public class ResourcePackAssembler
      * pack you desire. Useful for one-off files such as sounds.json.
      * 
      * @param path
-     *            The path inside the resource pack to this file.
+     *             The path inside the resource pack to this file.
      * @param file
-     *            The file to add.
+     *             The file to add.
      */
-    public void addCustomFile(String path, File file)
-    {
+    public void addCustomFile(String path, File file) {
         customs.add(new CustomFile(path, file));
     }
 
@@ -139,10 +134,9 @@ public class ResourcePackAssembler
      * @see #addCustomFile(String, File)
      * 
      * @param file
-     *            The file to add.
+     *             The file to add.
      */
-    public void addCustomFile(File file)
-    {
+    public void addCustomFile(File file) {
         addCustomFile(null, file);
     }
 
@@ -153,40 +147,35 @@ public class ResourcePackAssembler
      * 
      * @return The {@link ResourcePackAssembler} instance.
      */
-    public ResourcePackAssembler assemble()
-    {
+    public ResourcePackAssembler assemble() {
         TTFileUtils.safeDeleteDirectory(dir);
         dir.mkdirs();
 
         String pathToDir = dir.getAbsolutePath();
         File metaFile = new File(pathToDir + "/pack.mcmeta");
 
-        try
-        {
+        try {
             writeNewFile(metaFile, mcmeta);
 
-            if (hasPackPng)
-            {
-                TTFileUtils.copyFromJar(jarClass, modid + "/" + "pack.png", new File(dir.getAbsolutePath() + "/pack.png"));
+            if (hasPackPng) {
+                TTFileUtils
+                    .copyFromJar(jarClass, modid + "/" + "pack.png", new File(dir.getAbsolutePath() + "/pack.png"));
             }
 
             String itemsDir = pathToDir + "/assets/" + modid + "/textures/items";
             String blocksDir = pathToDir + "/assets/" + modid + "/textures/blocks";
             String langDir = pathToDir + "/assets/" + modid + "/lang";
 
-            for (File icon : icons)
-            {
+            for (File icon : icons) {
                 FileUtils.copyFile(icon, new File(itemsDir + "/" + icon.getName()));
                 FileUtils.copyFile(icon, new File(blocksDir + "/" + icon.getName()));
             }
 
-            for (File lang : langs)
-            {
+            for (File lang : langs) {
                 FileUtils.copyFile(lang, new File(langDir + "/" + lang.getName()));
             }
 
-            for (CustomFile custom : customs)
-            {
+            for (CustomFile custom : customs) {
                 File directory = new File(pathToDir + (custom.ext != null ? "/" + custom.ext : ""));
                 directory.mkdirs();
                 FileUtils.copyFile(custom.file, new File(directory.getAbsolutePath() + "/" + custom.file.getName()));
@@ -194,9 +183,7 @@ public class ResourcePackAssembler
 
             TTFileUtils.zipFolderContents(dir, zip);
             TTFileUtils.safeDeleteDirectory(dir);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -211,42 +198,42 @@ public class ResourcePackAssembler
      * where "resourcepack" is a folder at the same level as the directory
      * passed into the constructor.
      */
-    public void inject()
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-        {
-            try
-            {
-                if (defaultResourcePacks == null)
-                {
-                    defaultResourcePacks = ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "defaultResourcePacks",
-                            "field_110449_ao", "ap");
+    public void inject() {
+        if (FMLCommonHandler.instance()
+            .getEffectiveSide()
+            .isClient()) {
+            try {
+                if (defaultResourcePacks == null) {
+                    defaultResourcePacks = ReflectionHelper.getPrivateValue(
+                        Minecraft.class,
+                        Minecraft.getMinecraft(),
+                        "defaultResourcePacks",
+                        "field_110449_ao",
+                        "ap");
                 }
 
                 File dest = new File(dir.getParent() + "/resourcepack/" + zip.getName());
                 TTFileUtils.safeDelete(dest);
                 FileUtils.copyFile(zip, dest);
                 TTFileUtils.safeDelete(zip);
-                writeNewFile(new File(dest.getParent() + "/readme.txt"),
-                        TTCore.lang.localize("resourcepack.readme") + "\n\n" + TTCore.lang.localize("resourcepack.readme2"));
+                writeNewFile(
+                    new File(dest.getParent() + "/readme.txt"),
+                    TTCore.lang.localize("resourcepack.readme") + "\n\n"
+                        + TTCore.lang.localize("resourcepack.readme2"));
                 defaultResourcePacks.add(new FileResourcePack(dest));
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 TTCore.logger.error("Failed to inject resource pack for mod {}", modid, e);
             }
-        }
-        else
-        {
+        } else {
             TTCore.logger.info("Skipping resource pack, we are on a dedicated server.");
         }
     }
 
-    private void writeNewFile(File file, String defaultText) throws IOException
-    {
+    private void writeNewFile(File file, String defaultText) throws IOException {
         TTFileUtils.safeDelete(file);
         file.delete();
-        file.getParentFile().mkdirs();
+        file.getParentFile()
+            .mkdirs();
         file.createNewFile();
 
         FileWriter fw = new FileWriter(file);

@@ -5,8 +5,8 @@ import net.minecraft.client.model.ModelRenderer;
 /**
  * To be used on techne-style box models
  */
-public interface IModelTT
-{
+public interface IModelTT {
+
     /**
      * Renders all parts of the model
      * 

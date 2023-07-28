@@ -3,6 +3,7 @@ package tterrag.core.common.event;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
+
 import cpw.mods.fml.common.eventhandler.Cancelable;
 
 /**
@@ -15,10 +16,9 @@ import cpw.mods.fml.common.eventhandler.Cancelable;
  * <br>
  * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
  **/
-public class ArrowUpdateEvent extends EntityEvent
-{
-    public ArrowUpdateEvent(Entity entity)
-    {
+public class ArrowUpdateEvent extends EntityEvent {
+
+    public ArrowUpdateEvent(Entity entity) {
         super(entity);
     }
 }

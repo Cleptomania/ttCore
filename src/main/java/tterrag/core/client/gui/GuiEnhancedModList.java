@@ -5,92 +5,86 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.StringUtils;
-import tterrag.core.TTCore;
-import tterrag.core.common.config.ConfigHandler;
+
 import cpw.mods.fml.client.GuiModList;
 import cpw.mods.fml.client.GuiScrollingList;
 import cpw.mods.fml.client.GuiSlotModList;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
+import lombok.SneakyThrows;
+import tterrag.core.TTCore;
+import tterrag.core.common.config.ConfigHandler;
 
-public class GuiEnhancedModList extends GuiModList
-{
-    private enum SortType
-    {
-        NORMAL(24), A_TO_Z(25), Z_TO_A(26);
+public class GuiEnhancedModList extends GuiModList {
+
+    private enum SortType {
+
+        NORMAL(24),
+        A_TO_Z(25),
+        Z_TO_A(26);
 
         private final int buttonID;
         private final ModComparator comparator;
 
-        private SortType(int buttonID)
-        {
+        private SortType(int buttonID) {
             this.buttonID = buttonID;
             this.comparator = new ModComparator(this);
         }
 
-        public static SortType getTypeForButton(GuiButton button)
-        {
-            for (SortType t : values())
-            {
-                if (t.buttonID == button.id)
-                {
+        public static SortType getTypeForButton(GuiButton button) {
+            for (SortType t : values()) {
+                if (t.buttonID == button.id) {
                     return t;
                 }
             }
             return null;
         }
     }
-    
-    private static class ModComparator implements Comparator<ModContainer>
-    {
+
+    private static class ModComparator implements Comparator<ModContainer> {
+
         private SortType type;
-        private ModComparator(SortType type)
-        {
+
+        private ModComparator(SortType type) {
             this.type = type;
         }
-        
+
         @Override
-        public int compare(ModContainer o1, ModContainer o2)
-        {
-            String name1 = StringUtils.stripControlCodes(o1.getName()).toLowerCase();
-            String name2 = StringUtils.stripControlCodes(o2.getName()).toLowerCase();
-            switch(type)
-            {
-            case A_TO_Z:
-                return name1.compareTo(name2);
-            case Z_TO_A:
-                return name2.compareTo(name1);
-            default:
-                return 0;
+        public int compare(ModContainer o1, ModContainer o2) {
+            String name1 = StringUtils.stripControlCodes(o1.getName())
+                .toLowerCase();
+            String name2 = StringUtils.stripControlCodes(o2.getName())
+                .toLowerCase();
+            switch (type) {
+                case A_TO_Z:
+                    return name1.compareTo(name2);
+                case Z_TO_A:
+                    return name2.compareTo(name1);
+                default:
+                    return 0;
             }
         }
     }
 
-    private class InfoButton extends GuiButton
-    {
-        public InfoButton()
-        {
+    private class InfoButton extends GuiButton {
+
+        public InfoButton() {
             super(30, GuiEnhancedModList.this.width - 22, 2, 20, 20, "?");
         }
 
         @Override
-        public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_)
-        {
-            if (this.field_146123_n)
-            {
+        public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_) {
+            if (this.field_146123_n) {
                 ModContainer sel = GuiEnhancedModList.this.getSelectedMod();
-                if (sel != null && sel.getName().equals(TTCore.NAME))
-                {
+                if (sel != null && sel.getName()
+                    .equals(TTCore.NAME)) {
                     this.displayString = TTCore.lang.localize("gui.modlistinfo2");
-                }
-                else
-                {
+                } else {
                     this.displayString = TTCore.lang.localize("gui.modlistinfo1");
                 }
 
@@ -99,26 +93,22 @@ public class GuiEnhancedModList extends GuiModList
                 {
                     this.width++;
                 }
-                
+
                 this.xPosition = GuiEnhancedModList.this.width - this.width - 2;
-            }
-            else
-            {
+            } else {
                 this.displayString = "?";
                 this.width = 20;
                 this.xPosition = GuiEnhancedModList.this.width - this.width - 2;
             }
-            
+
             super.drawButton(p_146112_1_, p_146112_2_, p_146112_3_);
         }
     }
 
     private static Field _mods, _selected, _selectedMod;
     private static Field _modList, _modListRight, _modListBottom, _modListMods, _listWidth;
-    static
-    {
-        try
-        {
+    static {
+        try {
             _mods = GuiModList.class.getDeclaredField("mods");
             _mods.setAccessible(true);
             _selected = GuiModList.class.getDeclaredField("selected");
@@ -135,9 +125,7 @@ public class GuiEnhancedModList extends GuiModList
             _modListMods.setAccessible(true);
             _listWidth = GuiModList.class.getDeclaredField("listWidth");
             _listWidth.setAccessible(true);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -151,28 +139,24 @@ public class GuiEnhancedModList extends GuiModList
     private boolean sorted = false;
     private SortType sortType = SortType.values()[ConfigHandler.defaultModSort];
 
-    public GuiEnhancedModList(GuiScreen mainMenu)
-    {
+    public GuiEnhancedModList(GuiScreen mainMenu) {
         super(mainMenu);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void initGui()
-    {
+    public void initGui() {
         super.initGui();
 
         // Let's move some buttons
-        for (GuiButton button : (List<GuiButton>) buttonList)
-        {
+        for (GuiButton button : (List<GuiButton>) buttonList) {
             if (button.id == 6) // Done button
             {
                 int min = getGuiModListRight();
                 int max = width;
                 button.xPosition = ((min + max) / 2) - (button.width / 2);
                 button.yPosition += 10;
-            }
-            else if (button.id == 20 || button.id == 21) // Config/Disable
+            } else if (button.id == 20 || button.id == 21) // Config/Disable
             {
                 button.yPosition += 10;
             }
@@ -185,7 +169,13 @@ public class GuiEnhancedModList extends GuiModList
 
         int width = (getListWidth() / numButtons);
         int x = 10, y = 10;
-        GuiButton normalSort = new GuiButton(SortType.NORMAL.buttonID, x, y, width - buttonMargin, 20, TTCore.lang.localize("gui.normal"));
+        GuiButton normalSort = new GuiButton(
+            SortType.NORMAL.buttonID,
+            x,
+            y,
+            width - buttonMargin,
+            20,
+            TTCore.lang.localize("gui.normal"));
         normalSort.enabled = false;
         buttonList.add(normalSort);
         x += width + buttonMargin;
@@ -194,58 +184,59 @@ public class GuiEnhancedModList extends GuiModList
         buttonList.add(new GuiButton(SortType.Z_TO_A.buttonID, x, y, width - buttonMargin, 20, "Z-A"));
 
         buttonList.add(new InfoButton());
-        
+
         reloadMods();
         disableButton();
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int button)
-    {
+    protected void mouseClicked(int x, int y, int button) {
         super.mouseClicked(x, y, button);
         search.mouseClicked(x, y, button);
-        if (button == 1 && x >= search.xPosition && x < search.xPosition + search.width && y >= search.yPosition && y < search.yPosition + search.height)
-        {
+        if (button == 1 && x >= search.xPosition
+            && x < search.xPosition + search.width
+            && y >= search.yPosition
+            && y < search.yPosition + search.height) {
             search.setText("");
         }
     }
 
     @Override
-    protected void keyTyped(char p_73869_1_, int p_73869_2_)
-    {
+    protected void keyTyped(char p_73869_1_, int p_73869_2_) {
         super.keyTyped(p_73869_1_, p_73869_2_);
         search.textboxKeyTyped(p_73869_1_, p_73869_2_);
     }
 
     @Override
-    public void updateScreen()
-    {
+    public void updateScreen() {
         super.updateScreen();
         search.updateCursorCounter();
 
-        if (!search.getText().equals(lastFilterText))
-        {
+        if (!search.getText()
+            .equals(lastFilterText)) {
             reloadMods();
             sorted = false;
         }
 
-        if (!sorted)
-        {
+        if (!sorted) {
             reloadMods();
             Collections.sort(getMods(), sortType.comparator);
             setMods();
             sorted = true;
         }
     }
-    
-    private void reloadMods()
-    {
+
+    private void reloadMods() {
         List<ModContainer> mods = getMods();
         mods.clear();
-        for (ModContainer m : Loader.instance().getActiveModList())
-        {
-            if (m.getName().toLowerCase().contains(search.getText().toLowerCase()) && m.getMetadata().parentMod == null)
-            {
+        for (ModContainer m : Loader.instance()
+            .getActiveModList()) {
+            if (m.getName()
+                .toLowerCase()
+                .contains(
+                    search.getText()
+                        .toLowerCase())
+                && m.getMetadata().parentMod == null) {
                 mods.add(m);
             }
         }
@@ -254,8 +245,7 @@ public class GuiEnhancedModList extends GuiModList
     }
 
     @Override
-    public void drawScreen(int p_571_1_, int p_571_2_, float p_571_3_)
-    {
+    public void drawScreen(int p_571_1_, int p_571_2_, float p_571_3_) {
         super.drawScreen(p_571_1_, p_571_2_, p_571_3_);
 
         String text = TTCore.lang.localize("gui.search");
@@ -265,18 +255,15 @@ public class GuiEnhancedModList extends GuiModList
     }
 
     @Override
-    protected void actionPerformed(GuiButton button)
-    {
+    protected void actionPerformed(GuiButton button) {
         super.actionPerformed(button);
 
-        if (button.id == 30)
-        {
+        if (button.id == 30) {
             search.setText("");
             reloadMods();
-            for (ModContainer m : getMods())
-            {
-                if (m.getName().equals(TTCore.NAME))
-                {
+            for (ModContainer m : getMods()) {
+                if (m.getName()
+                    .equals(TTCore.NAME)) {
                     setSelectedMod(m);
                     setMods();
                 }
@@ -285,12 +272,9 @@ public class GuiEnhancedModList extends GuiModList
 
         SortType type = SortType.getTypeForButton(button);
 
-        if (type == null)
-        {
+        if (type == null) {
             return;
-        }
-        else
-        {
+        } else {
             sorted = false;
             sortType = type;
             disableButton();
@@ -298,40 +282,32 @@ public class GuiEnhancedModList extends GuiModList
 
         setMods();
     }
-    
+
     @SuppressWarnings("unchecked")
-    private void disableButton()
-    {
-        for (GuiButton b : (List<GuiButton>) buttonList)
-        {
-            if (SortType.getTypeForButton(b) != null)
-            {
+    private void disableButton() {
+        for (GuiButton b : (List<GuiButton>) buttonList) {
+            if (SortType.getTypeForButton(b) != null) {
                 b.enabled = true;
             }
-            if (b.id == sortType.buttonID)
-            {
+            if (b.id == sortType.buttonID) {
                 b.enabled = false;
             }
         }
     }
 
     @SneakyThrows
-    private void setMods()
-    {
+    private void setMods() {
         List<ModContainer> mods = getMods();
 
         ModContainer sel = getSelectedMod();
         boolean found = false;
-        for (int i = 0; !found && i < mods.size(); i++)
-        {
-            if (sel == mods.get(i))
-            {
+        for (int i = 0; !found && i < mods.size(); i++) {
+            if (sel == mods.get(i)) {
                 _selected.setInt(this, i);
                 found = true;
             }
         }
-        if (!found)
-        {
+        if (!found) {
             _selected.setInt(this, -1);
             _selectedMod.set(this, null);
         }
@@ -340,51 +316,43 @@ public class GuiEnhancedModList extends GuiModList
     }
 
     @SneakyThrows
-    private GuiSlotModList getGuiModList()
-    {
+    private GuiSlotModList getGuiModList() {
         return (GuiSlotModList) _modList.get(this);
     }
 
     @SneakyThrows
-    private int getGuiModListRight()
-    {
+    private int getGuiModListRight() {
         return _modListRight.getInt(getGuiModList());
     }
 
     @SneakyThrows
-    private void setGuiModListBottom(int bottom)
-    {
+    private void setGuiModListBottom(int bottom) {
         _modListBottom.set(getGuiModList(), bottom);
     }
 
     @SneakyThrows
-    private int getGuiModListBottom()
-    {
+    private int getGuiModListBottom() {
         return _modListBottom.getInt(getGuiModList());
     }
 
     @SuppressWarnings("unchecked")
     @SneakyThrows
-    private List<ModContainer> getMods()
-    {
+    private List<ModContainer> getMods() {
         return (List<ModContainer>) _modListMods.get(_modList.get(this));
     }
 
     @SneakyThrows
-    private int getListWidth()
-    {
+    private int getListWidth() {
         return _listWidth.getInt(this);
     }
 
     @SneakyThrows
-    private ModContainer getSelectedMod()
-    {
+    private ModContainer getSelectedMod() {
         return (ModContainer) _selectedMod.get(this);
     }
 
     @SneakyThrows
-    private void setSelectedMod(ModContainer mod)
-    {
+    private void setSelectedMod(ModContainer mod) {
         _selectedMod.set(this, mod);
     }
 }

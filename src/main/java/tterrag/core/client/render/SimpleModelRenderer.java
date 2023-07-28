@@ -1,19 +1,20 @@
 package tterrag.core.client.render;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.obj.WavefrontObject;
-import tterrag.core.client.util.RenderingUtils;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import tterrag.core.client.util.RenderingUtils;
 
 @AllArgsConstructor
-public class SimpleModelRenderer implements ISimpleBlockRenderingHandler
-{
+public class SimpleModelRenderer implements ISimpleBlockRenderingHandler {
+
     private final Tessellator tes = Tessellator.instance;
 
     private final WavefrontObject model;
@@ -22,8 +23,7 @@ public class SimpleModelRenderer implements ISimpleBlockRenderingHandler
     private final int renderId;
 
     @Override
-    public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer)
-    {
+    public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
         RenderHelper.disableStandardItemLighting();
         tes.startDrawingQuads();
         tes.setColorOpaque_F(1, 1, 1);
@@ -33,8 +33,8 @@ public class SimpleModelRenderer implements ISimpleBlockRenderingHandler
     }
 
     @Override
-    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
-    {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId,
+        RenderBlocks renderer) {
         tes.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
         tes.setColorOpaque_F(1, 1, 1);
         tes.addTranslation(x + .5F, y + .5F, z + .5F);
@@ -44,8 +44,7 @@ public class SimpleModelRenderer implements ISimpleBlockRenderingHandler
     }
 
     @Override
-    public boolean shouldRender3DInInventory(int modelId)
-    {
+    public boolean shouldRender3DInInventory(int modelId) {
         return true;
     }
 }

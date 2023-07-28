@@ -2,8 +2,8 @@ package tterrag.core.common;
 
 import tterrag.core.common.util.Scheduler;
 
-public class CommonProxy
-{
+public class CommonProxy {
+
     private static final Scheduler scheduler = new Scheduler();
 
     /**
@@ -12,8 +12,7 @@ public class CommonProxy
      * For internal use only, please call {@link Scheduler#instance()} to obtain an
      * {@link Scheduler} instance.
      */
-    public Scheduler getScheduler()
-    {
+    public Scheduler getScheduler() {
         return scheduler;
     }
 }

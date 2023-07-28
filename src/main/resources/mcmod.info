@@ -1,16 +1,17 @@
-[
 {
-  "modid": "ttCore",
-  "name": "ttCore",
-  "description": "Core mod for tterrag's mods.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "http://ci.tterrag.com",
-  "updateUrl": "http://ci.tterrag.com/job/ttCore",
-  "authors": ["tterrag"],
-  "credits": "",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "${modId}",
+    "name": "${modName}",
+    "description": "Core mod for tterrag's mods.",
+    "version": "${modVersion}",
+    "mcversion": "${minecraftVersion}",
+    "url": "http://ci.tterrag.com",
+    "updateUrl": "http://ci.tterrag.com/job/ttCore",
+    "authors": ["tterrag"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  ]}
 }
-]

@@ -1,11 +1,12 @@
 package tterrag.core.common.event;
 
-import lombok.RequiredArgsConstructor;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
+import lombok.RequiredArgsConstructor;
 
 /**
  * ItemEvent is fired when an event involving any ItemStack occurs.<br>
@@ -17,8 +18,8 @@ import cpw.mods.fml.common.eventhandler.Event;
  * All children of this event are fired on the {@link MinecraftForge#EVENT_BUS}.<br>
  **/
 @RequiredArgsConstructor
-public class ItemStackEvent extends Event
-{
+public class ItemStackEvent extends Event {
+
     public final ItemStack item;
 
     /**
@@ -32,12 +33,11 @@ public class ItemStackEvent extends Event
      * is first fired. <br>
      * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
      **/
-    public static class ItemEnchantabilityEvent extends ItemStackEvent
-    {
+    public static class ItemEnchantabilityEvent extends ItemStackEvent {
+
         public int enchantability;
 
-        public ItemEnchantabilityEvent(ItemStack itemStack, int baseEnchantability)
-        {
+        public ItemEnchantabilityEvent(ItemStack itemStack, int baseEnchantability) {
             super(itemStack);
             enchantability = baseEnchantability;
         }
@@ -55,12 +55,11 @@ public class ItemStackEvent extends Event
      * event is first fired. <br>
      * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
      **/
-    public static class ItemRarityEvent extends ItemStackEvent
-    {
+    public static class ItemRarityEvent extends ItemStackEvent {
+
         public EnumRarity rarity;
 
-        public ItemRarityEvent(ItemStack itemStack, EnumRarity baseRarity)
-        {
+        public ItemRarityEvent(ItemStack itemStack, EnumRarity baseRarity) {
             super(itemStack);
             rarity = baseRarity;
         }

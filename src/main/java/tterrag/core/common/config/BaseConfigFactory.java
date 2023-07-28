@@ -4,32 +4,29 @@ import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import tterrag.core.client.config.BaseConfigGui;
-import cpw.mods.fml.client.IModGuiFactory;
 
-public class BaseConfigFactory implements IModGuiFactory
-{
+import cpw.mods.fml.client.IModGuiFactory;
+import tterrag.core.client.config.BaseConfigGui;
+
+public class BaseConfigFactory implements IModGuiFactory {
+
     @Override
-    public void initialize(Minecraft minecraftInstance)
-    {
+    public void initialize(Minecraft minecraftInstance) {
         ;
     }
 
     @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass()
-    {
+    public Class<? extends GuiScreen> mainConfigGuiClass() {
         return BaseConfigGui.class;
     }
 
     @Override
-    public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
-    {
+    public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
         return null;
     }
 
     @Override
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
-    {
+    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
         return null;
     }
 

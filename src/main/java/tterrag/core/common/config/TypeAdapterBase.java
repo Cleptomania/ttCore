@@ -4,52 +4,48 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
-import tterrag.core.common.config.ConfigProcessor.ITypeAdapter;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import tterrag.core.common.config.ConfigProcessor.ITypeAdapter;
+
 @AllArgsConstructor
 @Getter
 @SuppressWarnings({ "serial", "unchecked" })
-public abstract class TypeAdapterBase<ACTUAL, BASE> implements ITypeAdapter<ACTUAL, BASE>
-{
+public abstract class TypeAdapterBase<ACTUAL, BASE> implements ITypeAdapter<ACTUAL, BASE> {
+
     private final TypeToken<ACTUAL> actualType;
     private final Property.Type type;
     private final Class<?> primitiveType;
 
-    public TypeAdapterBase(TypeToken<ACTUAL> actualType, Property.Type baseType)
-    {
+    public TypeAdapterBase(TypeToken<ACTUAL> actualType, Property.Type baseType) {
         this(actualType, baseType, null);
     }
 
-    public static final class TypeAdapterSame<TYPE> extends TypeAdapterBase<TYPE, TYPE>
-    {
-        public TypeAdapterSame(TypeToken<TYPE> actual, Property.Type base)
-        {
+    public static final class TypeAdapterSame<TYPE> extends TypeAdapterBase<TYPE, TYPE> {
+
+        public TypeAdapterSame(TypeToken<TYPE> actual, Property.Type base) {
             super(actual, base);
         }
 
-        public TypeAdapterSame(TypeToken<TYPE> actual, Property.Type base, Class<?> primitiveType)
-        {
+        public TypeAdapterSame(TypeToken<TYPE> actual, Property.Type base, Class<?> primitiveType) {
             super(actual, base, primitiveType);
         }
 
         @Override
-        public TYPE createActualType(TYPE base)
-        {
+        public TYPE createActualType(TYPE base) {
             return base;
         }
 
         @Override
-        public TYPE createBaseType(TYPE actual)
-        {
+        public TYPE createBaseType(TYPE actual) {
             return actual;
         }
     }

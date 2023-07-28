@@ -8,40 +8,33 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 @SuppressWarnings("unused")
 @MCVersion("1.7.10")
 @IFMLLoadingPlugin.SortingIndex(Integer.MAX_VALUE) // we want deobf no matter what
-public class TTCorePlugin implements IFMLLoadingPlugin
-{
+public class TTCorePlugin implements IFMLLoadingPlugin {
+
     public static boolean runtimeDeobfEnabled = false;
 
     @Override
-    public String[] getASMTransformerClass()
-    {
-        return new String[] { 
-                "tterrag.core.common.transform.TTCoreTransformer",
-                "tterrag.core.common.transform.TTCoreTransformerClient"
-       };
+    public String[] getASMTransformerClass() {
+        return new String[] { "tterrag.core.common.transform.TTCoreTransformer",
+            "tterrag.core.common.transform.TTCoreTransformerClient" };
     }
 
     @Override
-    public String getModContainerClass()
-    {
+    public String getModContainerClass() {
         return null;
     }
 
     @Override
-    public String getSetupClass()
-    {
+    public String getSetupClass() {
         return null;
     }
 
     @Override
-    public void injectData(Map<String, Object> data)
-    {
+    public void injectData(Map<String, Object> data) {
         runtimeDeobfEnabled = (Boolean) data.get("runtimeDeobfuscationEnabled");
     }
 
     @Override
-    public String getAccessTransformerClass()
-    {
+    public String getAccessTransformerClass() {
         return null;
     }
 }

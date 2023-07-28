@@ -15,15 +15,14 @@ import lombok.experimental.Wither;
 @Immutable
 @Value
 @AllArgsConstructor(staticName = "of")
-public class Bound<T extends Number & Comparable<T>>
-{
+public class Bound<T extends Number & Comparable<T>> {
+
     public static final Bound<Double> MAX_BOUND = Bound.of(Double.MIN_VALUE, Double.MAX_VALUE);
 
     @Wither
     public T min, max;
 
-    public T clamp(T val)
-    {
+    public T clamp(T val) {
         return val.compareTo(min) < 0 ? min : val.compareTo(max) > 0 ? max : val;
     }
 }

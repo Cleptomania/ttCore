@@ -3,6 +3,7 @@ package tterrag.core.common.config;
 import java.io.File;
 
 import net.minecraftforge.common.config.Configuration;
+
 import tterrag.core.TTCore;
 import tterrag.core.common.Handlers.Handler;
 import tterrag.core.common.Handlers.Handler.HandlerType;
@@ -20,19 +21,21 @@ import tterrag.core.common.tweaks.Tweak;
 import tterrag.core.common.tweaks.Tweaks;
 
 @Handler(value = HandlerType.FML, getInstFrom = Inst.METHOD)
-public class ConfigHandler extends AbstractConfigHandler implements ITweakConfigHandler, IReloadCallback
-{
+public class ConfigHandler extends AbstractConfigHandler implements ITweakConfigHandler, IReloadCallback {
+
     private static final String sectionGeneral = Configuration.CATEGORY_GENERAL;
     private static final String sectionEnchants = "enchants";
 
     @Config
-    @Comment({"Show oredictionary names of every item in its tooltip.", "0 - Off", "1 - Always on", "2 - Only with shift", "3 - Only in debug mode"})
+    @Comment({ "Show oredictionary names of every item in its tooltip.", "0 - Off", "1 - Always on",
+        "2 - Only with shift", "3 - Only in debug mode" })
     @Range(min = 0, max = 3)
     @NoSync
     public static int showOredictTooltips = 1;
 
     @Config
-    @Comment({ "Show item registry names in tooltips.", "0 - Off", "1 - Always on", "2 - Only with shift", "3 - Only in debug mode" })
+    @Comment({ "Show item registry names in tooltips.", "0 - Off", "1 - Always on", "2 - Only with shift",
+        "3 - Only in debug mode" })
     @Range(min = 0, max = 3)
     @NoSync
     public static int showRegistryNameTooltips = 3;
@@ -56,13 +59,15 @@ public class ConfigHandler extends AbstractConfigHandler implements ITweakConfig
     public static boolean allowCropRC = true;
 
     @Config
-    @Comment({ "0 - Do nothing", "1 - Remove stacktraces, leave 1-line missing texture errors", "2 - Remove all missing texture errors completely." })
+    @Comment({ "0 - Do nothing", "1 - Remove stacktraces, leave 1-line missing texture errors",
+        "2 - Remove all missing texture errors completely." })
     @NoSync
     @Range(min = 0, max = 2)
     public static int textureErrorRemover = 1;
 
     @Config
-    @Comment({ "Controls the default sorting on the mod list GUI.", "0 - Default sort (load order)", "1 - A to Z sort", "2 - Z to A sort" })
+    @Comment({ "Controls the default sorting on the mod list GUI.", "0 - Default sort (load order)", "1 - A to Z sort",
+        "2 - Z to A sort" })
     @NoSync
     @Range(min = 0, max = 2)
     public static int defaultModSort = 1;
@@ -92,15 +97,15 @@ public class ConfigHandler extends AbstractConfigHandler implements ITweakConfig
     @Config(sectionEnchants)
     @Comment("Allow the Auto Smelt enchant to work with Fortune.")
     public static boolean allowAutoSmeltWithFortune = true;
-    
-//    @Config("test")
-//    public static List<Integer> test1 = Lists.newArrayList(1, 2, 3);
-//    @Config("test")
-//    public static List<Double> test2 = Lists.newArrayList(0.1, 0.2, 0.3);
-//    @Config("test")
-//    public static List<Boolean> test3 = Lists.newArrayList(true, false, true);
-//    @Config("test")
-//    public static List<String> test4 = Lists.newArrayList("test1", "test2", "test3");
+
+    // @Config("test")
+    // public static List<Integer> test1 = Lists.newArrayList(1, 2, 3);
+    // @Config("test")
+    // public static List<Double> test2 = Lists.newArrayList(0.1, 0.2, 0.3);
+    // @Config("test")
+    // public static List<Boolean> test3 = Lists.newArrayList(true, false, true);
+    // @Config("test")
+    // public static List<String> test4 = Lists.newArrayList("test1", "test2", "test3");
 
     private static ConfigHandler INSTANCE;
 
@@ -108,23 +113,19 @@ public class ConfigHandler extends AbstractConfigHandler implements ITweakConfig
     public static File configFile;
     public static ConfigProcessor processor;
 
-    public static ConfigHandler instance()
-    {
-        if (INSTANCE == null)
-        {
+    public static ConfigHandler instance() {
+        if (INSTANCE == null) {
             INSTANCE = new ConfigHandler();
         }
         return INSTANCE;
     }
 
-    protected ConfigHandler()
-    {
+    protected ConfigHandler() {
         super(TTCore.MODID);
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         addSection(sectionGeneral);
         addSection(sectionEnchants);
         addSection("tweaks");
@@ -133,36 +134,32 @@ public class ConfigHandler extends AbstractConfigHandler implements ITweakConfig
     }
 
     @Override
-    protected void reloadIngameConfigs()
-    {
+    protected void reloadIngameConfigs() {
         Tweaks.loadIngameTweaks();
     }
 
     @Override
-    protected void reloadNonIngameConfigs()
-    {
+    protected void reloadNonIngameConfigs() {
         Tweaks.loadNonIngameTweaks();
     }
 
     @Override
-    public void callback(ConfigProcessor inst)
-    {
+    public void callback(ConfigProcessor inst) {
         Tweaks.loadIngameTweaks();
     }
 
     @Override
-    public boolean addBooleanFor(Tweak tweak)
-    {
+    public boolean addBooleanFor(Tweak tweak) {
         activateSection("tweaks");
         return getValue(tweak.getName(), tweak.getComment(), true);
     }
 
-    public void loadRightClickCrops()
-    {
-        JsonConfigReader<PlantInfo> reader = new JsonConfigReader<PlantInfo>(new ModToken(TTCore.class, TTCore.MODID.toLowerCase() + "/config"),
-                ttConfigFolder.getAbsolutePath() + "/cropConfig.json", PlantInfo.class);
-        for (PlantInfo i : reader)
-        {
+    public void loadRightClickCrops() {
+        JsonConfigReader<PlantInfo> reader = new JsonConfigReader<PlantInfo>(
+            new ModToken(TTCore.class, TTCore.MODID.toLowerCase() + "/config"),
+            ttConfigFolder.getAbsolutePath() + "/cropConfig.json",
+            PlantInfo.class);
+        for (PlantInfo i : reader) {
             i.init();
             RightClickCropHandler.INSTANCE.addCrop(i);
         }

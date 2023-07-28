@@ -6,17 +6,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import tterrag.core.common.config.ConfigProcessor;
 import net.minecraftforge.common.config.Configuration;
 
+import tterrag.core.common.config.ConfigProcessor;
+
 /**
- * Used to mark a {@code static} field as a config option. Has no effect if the class is not processed with a {@link ConfigProcessor}
+ * Used to mark a {@code static} field as a config option. Has no effect if the class is not processed with a
+ * {@link ConfigProcessor}
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @Documented
-public @interface Config
-{
+public @interface Config {
+
     /**
      * The section of the config option.
      * 

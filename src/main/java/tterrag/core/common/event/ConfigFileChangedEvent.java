@@ -1,7 +1,7 @@
 package tterrag.core.common.event;
 
-import lombok.Getter;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
+import lombok.Getter;
 
 /**
  * This event is posted to the FML bus when the /reloadConfigs command is run,
@@ -19,18 +19,16 @@ import cpw.mods.fml.client.event.ConfigChangedEvent;
  * <b>If <code>setSuccessful()</code> is not called, the event post will be
  * considered a failure!</b>
  */
-public class ConfigFileChangedEvent extends ConfigChangedEvent
-{
+public class ConfigFileChangedEvent extends ConfigChangedEvent {
+
     @Getter
     private boolean successful;
 
-    public ConfigFileChangedEvent(String modID)
-    {
+    public ConfigFileChangedEvent(String modID) {
         super(modID, "null", true, false);
     }
 
-    public void setSuccessful()
-    {
+    public void setSuccessful() {
         this.successful = true;
     }
 }

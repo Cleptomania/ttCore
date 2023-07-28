@@ -7,14 +7,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Represents the range a config value can be, i.e. a minimum and maximum value. This is applied forcefully, any value past one of the extremes will
+ * Represents the range a config value can be, i.e. a minimum and maximum value. This is applied forcefully, any value
+ * past one of the extremes will
  * be clamped inside this range. Has no effect is this field is not also annotated with {@link Config}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @Documented
-public @interface Range
-{
+public @interface Range {
 
     /**
      * The min value of the config.

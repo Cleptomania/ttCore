@@ -1,7 +1,7 @@
 package tterrag.core.api.common.imc;
 
-public class IMC
-{
+public class IMC {
+
     /**
      * Use an IMC event with this string to add a right click crop as compatible. Syntax is a single
      * string, with '|' separating the values, in the order seed, block, meta, resetMeta. A valid

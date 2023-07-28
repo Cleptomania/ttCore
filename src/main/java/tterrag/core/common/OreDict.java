@@ -2,7 +2,6 @@ package tterrag.core.common;
 
 import java.util.ArrayList;
 
-import lombok.experimental.UtilityClass;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -10,11 +9,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import lombok.experimental.UtilityClass;
+
 @UtilityClass
-public class OreDict
-{
-    public void registerVanilla()
-    {
+public class OreDict {
+
+    public void registerVanilla() {
         safeRegister("barsIron", Blocks.iron_bars);
         safeRegister("blockHopper", Blocks.hopper);
         safeRegister("blockObsidian", Blocks.obsidian);
@@ -48,29 +48,23 @@ public class OreDict
         safeRegister("slabQuartz", new ItemStack(Blocks.stone_slab, 1, 7));
     }
 
-    public void safeRegister(String name, Block block)
-    {
+    public void safeRegister(String name, Block block) {
         safeRegister(name, Item.getItemFromBlock(block));
     }
 
-    public void safeRegister(String name, Item item)
-    {
+    public void safeRegister(String name, Item item) {
         safeRegister(name, new ItemStack(item));
     }
 
-    public void safeRegister(String name, ItemStack stack)
-    {
-        if (!isRegistered(stack, OreDictionary.getOres(name)))
-            OreDictionary.registerOre(name, stack);
+    public void safeRegister(String name, ItemStack stack) {
+        if (!isRegistered(stack, OreDictionary.getOres(name))) OreDictionary.registerOre(name, stack);
     }
 
-    private boolean isRegistered(ItemStack stack, ArrayList<ItemStack> toCheck)
-    {
-        for (ItemStack check : toCheck)
-        {
+    private boolean isRegistered(ItemStack stack, ArrayList<ItemStack> toCheck) {
+        for (ItemStack check : toCheck) {
             if (stack != null && stack.getItem() == check.getItem()
-                    && (stack.getItemDamage() == check.getItemDamage() || stack.getItemDamage() == OreDictionary.WILDCARD_VALUE))
-            {
+                && (stack.getItemDamage() == check.getItemDamage()
+                    || stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)) {
                 return true;
             }
         }

@@ -1,6 +1,7 @@
 package tterrag.core.client.util;
 
-import lombok.experimental.UtilityClass;
+import static org.lwjgl.opengl.GL11.*;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -11,26 +12,27 @@ import net.minecraftforge.client.model.obj.GroupObject;
 import net.minecraftforge.client.model.obj.TextureCoordinate;
 import net.minecraftforge.client.model.obj.Vertex;
 import net.minecraftforge.client.model.obj.WavefrontObject;
+
+import lombok.experimental.UtilityClass;
 import tterrag.core.client.handlers.ClientHandler;
 
-import static org.lwjgl.opengl.GL11.*;
-
 @UtilityClass
-public class RenderingUtils
-{
-    public void renderWithIcon(WavefrontObject model, IIcon icon, Tessellator tes)
-    {
-        for (GroupObject go : model.groupObjects)
-        {
-            for (Face f : go.faces)
-            {
+public class RenderingUtils {
+
+    public void renderWithIcon(WavefrontObject model, IIcon icon, Tessellator tes) {
+        for (GroupObject go : model.groupObjects) {
+            for (Face f : go.faces) {
                 Vertex n = f.faceNormal;
                 tes.setNormal(n.x, n.y, n.z);
-                for (int i = 0; i < f.vertices.length; i++)
-                {
+                for (int i = 0; i < f.vertices.length; i++) {
                     Vertex v = f.vertices[i];
                     TextureCoordinate t = f.textureCoordinates[i];
-                    tes.addVertexWithUV(v.x, v.y, v.z, icon.getInterpolatedU(t.u * 16), icon.getInterpolatedV(t.v * 16));
+                    tes.addVertexWithUV(
+                        v.x,
+                        v.y,
+                        v.z,
+                        icon.getInterpolatedU(t.u * 16),
+                        icon.getInterpolatedV(t.v * 16));
                 }
             }
         }
@@ -40,20 +42,18 @@ public class RenderingUtils
      * Renders an item entity in 3D
      * 
      * @param item
-     *            The item to render
+     *               The item to render
      * @param rotate
-     *            Whether to "spin" the item like it would if it were a real dropped entity
+     *               Whether to "spin" the item like it would if it were a real dropped entity
      */
-    public void render3DItem(EntityItem item, boolean rotate)
-    {
+    public void render3DItem(EntityItem item, boolean rotate) {
         float rot = getRotation(1.0f);
 
         glPushMatrix();
         glDepthMask(true);
         rotate &= Minecraft.getMinecraft().gameSettings.fancyGraphics;
 
-        if (rotate)
-        {
+        if (rotate) {
             glRotatef(rot, 0, 1, 0);
         }
 
@@ -63,13 +63,11 @@ public class RenderingUtils
         glPopMatrix();
     }
 
-    public float getRotation(float mult)
-    {
+    public float getRotation(float mult) {
         return ClientHandler.getTicksElapsed() * mult;
     }
 
-    public void renderBillboardQuad(float rot, double scale)
-    {
+    public void renderBillboardQuad(float rot, double scale) {
         glPushMatrix();
 
         glRotatef(-RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
@@ -92,8 +90,7 @@ public class RenderingUtils
         glPopMatrix();
     }
 
-    public void rotateToPlayer()
-    {
+    public void rotateToPlayer() {
         glRotatef(-RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
         glRotatef(RenderManager.instance.playerViewX, 1.0F, 0.0F, 0.0F);
     }

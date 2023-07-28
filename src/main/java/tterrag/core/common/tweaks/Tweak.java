@@ -4,16 +4,15 @@ import lombok.Getter;
 import tterrag.core.common.config.ConfigHandler;
 
 @Getter
-public abstract class Tweak
-{
+public abstract class Tweak {
+
     private String name, comment;
 
-    public Tweak(String key, String comment)
-    {
+    public Tweak(String key, String comment) {
         this.name = key;
         this.comment = comment;
-        if (ConfigHandler.instance().addBooleanFor(this))
-        {
+        if (ConfigHandler.instance()
+            .addBooleanFor(this)) {
             load();
         }
     }
